@@ -1,0 +1,3 @@
+whatsapp-api-client-python
+openai
+pymongo
