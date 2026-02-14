@@ -1,0 +1,43 @@
+name: Maize Market Bot
+
+on:
+  schedule:
+    # Runs at 2:30 AM & 2:30 PM UTC = 8:00 AM & 8:00 PM IST
+    - cron: '30 2,14 * * *'
+  
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  run-maize-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run maize automation
+        env:
+          GREEN_API_INSTANCE: ${{ secrets.GREEN_API_INSTANCE }}
+          GREEN_API_TOKEN: ${{ secrets.GREEN_API_TOKEN }}
+          WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }}
+          PERPLEXITY_KEY: ${{ secrets.PERPLEXITY_KEY }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: python maize_automation.py
+      
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: execution-logs
+          path: |
+            *.log
