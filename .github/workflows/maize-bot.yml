@@ -13,10 +13,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5  # Updated to v5
         with:
           python-version: '3.11'
       
@@ -36,8 +36,9 @@ jobs:
       
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4 (fixes the error!)
         with:
-          name: execution-logs
+          name: execution-logs-${{ github.run_number }}  # Added unique name
           path: |
             *.log
+          retention-days: 7  # Keep logs for 7 days
